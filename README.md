@@ -137,45 +137,87 @@ Submit a link that downloads your customized repository to this [Google form](ht
 
 ## Installation steps
 
-We will be installing Singularity v4.0.1, which works for the BARN simulations.
+We will be installing **Singularity v4.0.1**, which is required for the BARN simulations.
 
-1. Install required dependencies
-```bash
-sudo apt-get update && sudo apt-get install -y     build-essential     libssl-dev     uuid-dev     libgpgme11-dev     squashfs-tools     libseccomp-dev     pkg-config     uidmap
-```
+### 1. Install required dependencies
 
-2. Install Go
-```bash
-export VERSION=1.25.5 OS=linux ARCH=amd64 &&     wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz &&     sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz &&     rm go$VERSION.$OS-$ARCH.tar.gz
-```
+Update your package list and install the necessary development tools and libraries.
 
 ```bash
-echo 'export GOPATH=${HOME}/go' >> ~/.bashrc &&     echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc &&     source ~/.bashrc
+sudo apt-get update && sudo apt-get install -y \
+    build-essential \
+    libssl-dev \
+    uuid-dev \
+    libgpgme11-dev \
+    squashfs-tools \
+    libseccomp-dev \
+    pkg-config \
+    uidmap
 ```
 
-3. Download the binary for Singularity v4.0.1
+### 2. Install Go
+
+Singularity is written in Go, so a specific version is required.
+
+**Download and extract:**
+
+```bash
+export VERSION=1.25.5 OS=linux ARCH=amd64 
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz
+rm go$VERSION.$OS-$ARCH.tar.gz
+```
+
+**Configure environment variables:**
+
+```bash
+echo 'export GOPATH=${HOME}/go' >> ~/.bashrc
+echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### 3. Download and Install Singularity
+
+We will use the pre-compiled `.deb` package for Ubuntu 22.04 (Jammy).
+
+**Download the binary:**
+
 ```bash
 wget https://github.com/sylabs/singularity/releases/download/v4.0.1/singularity-ce_4.0.1-jammy_amd64.deb
 ```
 
-4. Install the package
+**Install the package:**
+
 ```bash
 sudo dpkg -i singularity-ce_4.0.1-jammy_amd64.deb
 ```
 
-## Building and running the simulations
+---
 
-1. Build the Singularity container image
+## Building and Running Simulations
+
+### 1. Build the Container Image
+
+This command uses the definition file (`Singularityfile.def`) to create a `.sif` image.
+
 ```bash
-sudo singularity build --notest nav_competition_image.sif Singularityfile.def
+sudo singularity build --notest \
+    nav_competition_image.sif \
+    Singularityfile.def
 ```
 
-2. Run the simulation by running the container
+### 2. Run the Simulation
+
+Execute the simulation script through the Singularity container.
+
 ```bash
 ./singularity_run.sh nav_competition_image.sif python3 run.py --world_idx 10 --gui
 ```
 
 > [!TIP]
 > Options for running the container
+> - `--world_idx <world_number>` - The world number (0-359), default worlds are in `jackal-helper\worlds`
+>   - 0-299 are static obstacle worlds
+>   - 300-359 are dynamic obstacle worlds
 > - `--gui` - Opens the visual simulation in Gazebo, without this option, the simulation runs headlessly
 > - `-n` option inside `./singularity.sh` for using GPU, but recommended to not use it, removed by default as it crashes
