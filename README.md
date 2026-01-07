@@ -139,6 +139,14 @@ Submit a link that downloads your customized repository to this [Google form](ht
 
 We will be installing **Singularity v4.0.1**, which is required for the BARN simulations.
 
+### 0. Clone the repository
+
+```bash
+cd
+git clone https://github.com/SlyPredator/the-barn-challenge.git
+cd the-barn-challenge
+```
+
 ### 1. Install required dependencies
 
 Update your package list and install the necessary development tools and libraries.
@@ -191,6 +199,13 @@ wget https://github.com/sylabs/singularity/releases/download/v4.0.1/singularity-
 ```bash
 sudo dpkg -i singularity-ce_4.0.1-jammy_amd64.deb
 ```
+
+> [!NOTE]
+> If you get an error here that there are unmet dependencies, please install them using:
+> `sudo apt install <dependency-name>`
+> Once there are no other dependencies to install, then run the installation command for Singularity again.
+>
+> Verify with `singularity` in your terminal once it's done.
 
 ---
 
